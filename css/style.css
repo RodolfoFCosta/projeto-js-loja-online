@@ -25,10 +25,10 @@ body {
     color: var(--text-colot);
 }
 
-
-.container {
-    max-width: 1,68px;
+section {
+    padding: 4rem 0 3rem;
 }
+
 
 header {
     position: fixed;
@@ -39,9 +39,43 @@ header {
     box-shadow: 0 1px 4px hsl(0 4% 15% / 10%);
 }
 
+.container {
+    max-width: 1068px;
+    margin: auto;
+    width: 100%;
+}
+
 .nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px 0;
+}
+
+.logo {
+    font-size: 1.1rem;
+    color: var(--text-colot);
+    font-weight: 400;
+}
+
+#cart-icon {
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.shop {
+    margin-top: 2rem;
+}
+
+/* Products */
+.shop-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+    gap: 1.5rem;
 }
