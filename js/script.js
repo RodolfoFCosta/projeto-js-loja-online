@@ -1,285 +1,82 @@
-let tentativas = 6;
-let palavraSecretaCategoria;
-let palavraSecretaSort;
-let listaDinamica = [];
-let jogarNovamente = true;
-
-const palavras = [
-
-    palavra001 = {
-        nome: "PIRATININGA",
-        categoria: "LUGARES"
-    },
-
-    palavra002 = {
-        nome: "GANIMEDES",
-        categoria: "SATELITE"
-    },
-
-    palavra003 = {
-        nome: "NAMIBIA",
-        categoria: "LUGARES"
-    },
-
-    palavra004 = {
-        nome: "MIANMAR",
-        categoria: "LUGARES"
-    },
-
-    palavra005 = {
-        nome: "EQUADOR",
-        categoria: "LUGARES"
-    },
-
-    palavra006 = {
-        nome: "HELLOWEN",
-        categoria: "MUSICA"
-    },
-
-    palavra007 = {
-        nome: "MANOWAR",
-        categoria: "MUSICA"
-    },
-
-    palavra008 = {
-        nome: "KORZUS",
-        categoria: "MUSICA"
-    },
-
-    palavra009 = {
-        nome: "AERONAVE",
-        categoria: "VEICULOS"
-    },
-
-    palavra010 = {
-        nome: "MOTORHOMER",
-        categoria: "VEICULOS"
-    },
-
-    palavra011 = {
-        nome: "SUBARU",
-        categoria: "CARRO"
-    },
-
-    palavra012 = {
-        nome: "JAMAICA",
-        categoria: "LUGARES"
-    },
-
-    palavra013 = {
-        nome: "AFEGANISTAO",
-        categoria: "LUGARES"
-    },
-
-    palavra014 = {
-        nome: "MOTORHEAD",
-        categoria: "MUSICA"
-    },
-
-    palavra015 = {
-        nome: "CHECHENIA",
-        categoria: "LUGARES"
-    },
-
-    palavra016 = {
-        nome: "CREGUENHEM",
-        categoria: "LUGARES"
-    },
-
-    palavra017 = {
-        nome: "OS INFILTRADOS",
-        categoria: "TV E CINEMA"
-    },
-
-    palavra018 = {
-        nome: "SPACE TODAY",
-        categoria: "TV E CINEMA"
-    },
-
-    palavra019 = {
-        nome: "O FISICO TURISTA",
-        categoria: "TV E CINEMA"
-    },
-
-    palavra020 = {
-        nome: "OS BONS COMPANHEIROS",
-        categoria: "TV E CINEMA"
-    },
-
-    palavra021 = {
-        nome: "DUNA",
-        categoria: "TV E CINEMA"
-    },
-];
+// cart
+let cartIcon = document.querySelector('#cart-icon')
+let cart = document.querySelector('.cart')
+let closeCart = document.querySelector('#close-cart')
 
 
-criarPalavraSecreta()
-function criarPalavraSecreta() {
-    const indexPalavra = parseInt(Math.random() * palavras.length)
+// abrir carrinho de compras
+cartIcon.onclick = () => {
+    cart.classList.add("active");
+}
 
-    palavraSecretaSort = palavras[indexPalavra].nome;
-    palavraSecretaCategoria = palavras[indexPalavra].categoria;
-
+// fechar carrinho de compras
+closeCart.onclick = () => {
+    cart.classList.remove("active");
 }
 
 
-mostrarPalavra();
-function mostrarPalavra() {
-    const categoria = document.getElementById("categoria");
-    categoria.innerHTML = palavraSecretaCategoria;
+// cart working 
+if (document.readyState == "loading") {
+    document.addEventListener("DOMContentLoaded", ready);
+} else {
+    ready();
+}
 
-    const palavraTela = document.getElementById("palavra-secreta");
-    palavraTela.innerHTML = '';
 
-    for (i = 0; i < palavraSecretaSort.length; i++) {
+// Makig function
+function ready() {
+    //remove itenms from cart
+    var removeCartButtons = document.getElementsByClassName('cart-remove')
+    console.log(removeCartButtons)
 
-        if (listaDinamica[i] == undefined) {
-
-            if (palavraSecretaSort[i] == " ") {
-
-                listaDinamica[i] = " ";
-                palavraTela.innerHTML = palavraTela.innerHTML + "<div class='letrasEspaco'>" + listaDinamica[i] + "</div>"
-            } else {
-                listaDinamica[i] = "&nbsp;"
-                palavraTela.innerHTML = palavraTela.innerHTML + "<div class='letras'>" + listaDinamica[i] + "</div>"
-            }
-
-        } else {
-            if (palavraSecretaSort[i] == " ") {
-                listaDinamica[i] = " ";
-                palavraTela.innerHTML = palavraTela.innerHTML + "<div class='letrasEspaco'>" + listaDinamica[i] + "</div>"
-
-            } else {
-
-                palavraTela.innerHTML = palavraTela.innerHTML + "<div class='letras'>" + listaDinamica[i] + "</div>"
-
-            }
-
-        }
+    for (i = 0; i < removeCartButtons.length; i++) {
+        var button = removeCartButtons[i]
+        button.addEventListener("click", removeCartItem)
     }
-}
-
-
-function verifcaLetraEscolhida(letra) {
-    document.getElementById("tecla-" + letra).disabled = true;
-    if (tentativas > 0) {
-        mudarStyleLetra("tecla-" + letra, false);
-        comparaListas(letra);
-        mostrarPalavra();
+    // Quantity chages
+    var quantityInput = document.getElementsByClassName('cart-quantity')
+    for (i = 0; i < quantityInput.length; i++) {
+        var input = quantityInput[i]
+        input.addEventListener("change", quantityChanged);
     }
 
 }
 
-function mudarStyleLetra(tecla, cond) {
-    if (cond == false) {
-        document.getElementById(tecla).style.background = "#540054";
-        document.getElementById(tecla).style.color = "#fff";
-    } else {
-        document.getElementById(tecla).style.background = "#0cef0c";
-        document.getElementById(tecla).style.color = "#fff";
-    }
+// Remove items from cart
 
+function removeCartItem(event) {
+    var buttonClicked = event.target
+    buttonClicked.parentElement.remove();
+    updateTotal();
 }
 
-function comparaListas(letra) {
+function quantityChanged(event) {
+    var input = event.target;
 
-    const pos = palavraSecretaSort.indexOf(letra);
-    if (pos < 0) {
-        tentativas--;
-        carregaImg();
-
-        if (tentativas == 0) {
-            abreModal("Ops!", "Não foi dessa vez... A palavra correta era <br>" + palavraSecretaSort);
-            botaoReiniciarNovoJogo()
-        }
-
-    } else {
-        mudarStyleLetra("tecla-" + letra, true);
-        for (i = 0; i < palavraSecretaSort.length; i++) {
-
-            if (palavraSecretaSort[i] == letra) {
-                listaDinamica[i] = letra;
-            }
-        }
+    if (isNaN(input.value) || input.value <= 0) {
+        input.value = 1;
     }
 
-    let vitoria = true;
-    for (i = 0; i < palavraSecretaSort.length; i++) {
-
-        if (palavraSecretaSort[i] != listaDinamica[i]) {
-            vitoria = false;
-        }
-    }
-
-    if (vitoria == true) {
-        abreModal("PARABÉNS!", " Você Venceu (❁´◡`❁)");
-        tentativas = 0;
-        botaoReiniciarNovoJogo()
-    }
-};
-
-async function botaoReiniciarNovoJogo() {
-    while (jogarNovamente == true) {
-        document.getElementById("btn-restart").style.backgroundColor = '#aaa';
-        document.getElementById("btn-restart").style.scale = 1.3;
-        await atraso(500)
-        document.getElementById("btn-restart").style.backgroundColor = '#fdfdfd';
-        document.getElementById("btn-restart").style.scale = 1;
-        await atraso(300)
-    }
+    updateTotal()
 }
 
-async function atraso(tempo) {
-    return new Promise(x => setTimeout(x, tempo));
-}
+//update total
 
-function carregaImg() {
-    switch (tentativas) {
-        case 5:
-            document.getElementById("imagem").style.background = "url('./img/forca01.png')";
-            break;
+function updateTotal() {
+    var cartContent = document.getElementsByClassName('cart-content')[0]
+    var cartBoxes = cartContent.getAttributeNames('cart-box')
+    var total = 0;
 
-        case 4:
-            document.getElementById("imagem").style.background = "url('./img/forca02.png')";
-            break;
+    for (i = 0; i < cartBoxes.length; i++) {
+        var cartBox = cartBoxes[i]
+        var priceElement = cartBox.getElementsByClassName('cart-price')[0]
+        var quantityElement = cartBox.getElementsByClassName('cart-quantity')[0]
+        var price = parseFloat(priceElement.innerText.replace("R$", ""));
+        var quantity = quantityElement.value;
+        total = total + (price * quantity);
 
-        case 3:
-            document.getElementById("imagem").style.background = "url('./img/forca03.png')";
-            break;
 
-        case 2:
-            document.getElementById("imagem").style.background = "url('./img/forca04.png')";
-            break;
-
-        case 1:
-            document.getElementById("imagem").style.background = "url('./img/forca05.png')";
-            break;
-
-        case 0:
-            document.getElementById("imagem").style.background = "url('./img/forca06.png')";
-            break;
-
-        default:
-            document.getElementById("imagem").style.background = "url('./img/forca.png')";
-            break;
+        document.getElementsByClassName('total-price')[0].innerText = 'R$' + total;
     }
 }
-
-function abreModal(titulo, msg) {
-
-    let modalTitulo = document.getElementById('exampleModalLabel');
-    modalTitulo.innerText = titulo;
-
-    let modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = msg;
-
-    $("#myModal").modal({
-        show: true
-    });
-}
-
-let btnReiniciar = document.querySelector('#btn-restart');
-btnReiniciar.addEventListener('click', (e) => {
-    location.reload();
-})
 
